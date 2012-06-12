@@ -82,6 +82,9 @@ function Hammer(element, options, undefined)
 
     var _first = false;
 
+    // holds list of target elements being dragged
+    var _targets = [];
+
     var _gesture = null;
     var _prev_gesture = null;
 
@@ -406,9 +409,19 @@ function Hammer(element, options, undefined)
 
                 // on the first time trigger the start event
                 if(_first) {
+                    _targets = [];
+
+                    var touches = event.touches || [event];
+                    for(var i=0; i<touches.length; i++) {
+                        _targets.push(touches[i].target);
+                    }
+                    event_obj.targets = _targets;
+
                     triggerEvent("dragstart", event_obj);
 
                     _first = false;
+                } else {
+                    event_obj.targets = _targets;
                 }
 
                 // normal slide event
